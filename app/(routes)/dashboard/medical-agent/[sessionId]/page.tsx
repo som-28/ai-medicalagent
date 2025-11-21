@@ -155,19 +155,23 @@ function MedicalVoiceAgent() {
     try {
       setLoading(true);
 
-      // Stop the call first
-      if (typeof vapiInstance.stop === 'function') {
-        vapiInstance.stop();
+      // Remove all event listeners safely BEFORE stopping the call
+      if (vapiInstance && typeof vapiInstance.off === 'function') {
+        try {
+          vapiInstance.off('call-start', () => {});
+          vapiInstance.off('call-end', () => {});
+          vapiInstance.off('message', () => {});
+          vapiInstance.off('speech-start', () => {});
+          vapiInstance.off('speech-end', () => {});
+          vapiInstance.off('error', () => {});
+        } catch (err) {
+          console.log('Error removing listeners:', err);
+        }
       }
 
-      // Remove all event listeners safely
-      if (typeof vapiInstance.off === 'function') {
-        vapiInstance.off('call-start');
-        vapiInstance.off('call-end');
-        vapiInstance.off('message');
-        vapiInstance.off('speech-start');
-        vapiInstance.off('speech-end');
-        vapiInstance.off('error');
+      // Stop the call after removing listeners
+      if (vapiInstance && typeof vapiInstance.stop === 'function') {
+        vapiInstance.stop();
       }
 
       setCallStarted(false);

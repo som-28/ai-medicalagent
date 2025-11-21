@@ -57,7 +57,7 @@ export const AIDoctorAgents = [
         id: 7,
         specialist: "ENT Specialist",
         description: "Handles ear, nose, and throat-related problems.",
-        image: "/doctor7.png",
+        image: "/doctor2.png",
         agentPrompt: "You are a friendly ENT AI. Ask quickly about ENT symptoms and give simple, clear suggestions.",
         voiceId: "Jessica",
         subscriptionRequired: true
@@ -66,7 +66,7 @@ export const AIDoctorAgents = [
         id: 8,
         specialist: "Orthopedic",
         description: "Helps with bone, joint, and muscle pain.",
-        image: "/doctor8.png",
+        image: "/doctor4.png",
         agentPrompt: "You are an understanding Orthopedic AI. Ask where the pain is and give short, supportive advice.",
         voiceId: "Olivia",
         subscriptionRequired: true
@@ -84,7 +84,7 @@ export const AIDoctorAgents = [
         id: 10,
         specialist: "Dentist",
         description: "Handles oral hygiene and dental problems.",
-        image: "/doctor10.png",
+        image: "/doctor5.png",
         agentPrompt: "You are a cheerful Dentist AI. Ask about the dental issue and give quick, calming suggestions.",
         voiceId: "Ivan",
         subscriptionRequired: true
