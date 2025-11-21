@@ -30,27 +30,37 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  const {searchParams} = new URL(req.url);
-  const sessionId= searchParams.get('sessionId');
+  const { searchParams } = new URL(req.url);
+  const sessionId = searchParams.get('sessionId');
   const user = await currentUser();
   
-  if(sessionId=='all'){
-
-      const result = await db.select().from(SessionChatTable)
-    //@ts-ignore
-    .where(eq(SessionChatTable.createdBy,user?.primaryEmailAddress?.emailAddress))
-    .orderBy(desc(SessionChatTable.id));
-
-    return NextResponse.json(result);
-  
-
+  if (!user?.primaryEmailAddress?.emailAddress) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    );
   }
-  else{
-    
-  const result = await db.select().from(SessionChatTable)
-  //@ts-ignore
-  .where(eq(SessionChatTable.sessionId,sessionId));
 
-  return NextResponse.json(result[0]);
+  try {
+    const userEmail = user.primaryEmailAddress.emailAddress;
+
+    if (sessionId === 'all') {
+      const result = await db.select().from(SessionChatTable)
+        .where(eq(SessionChatTable.createdBy, userEmail))
+        .orderBy(desc(SessionChatTable.id));
+
+      return NextResponse.json(result);
+    } else {
+      const result = await db.select().from(SessionChatTable)
+        .where(eq(SessionChatTable.sessionId, sessionId || ''));
+
+      return NextResponse.json(result[0] || null);
+    }
+  } catch (e) {
+    console.error('Error in GET /api/session-chat:', e);
+    return NextResponse.json(
+      { error: 'Failed to fetch session data' },
+      { status: 500 }
+    );
   }
 }

@@ -37,35 +37,49 @@ Return the result in this JSON format:
 
 Only include valid fields. Respond with nothing else.`
 
-export async function POST(req:NextRequest){
-    const {sessionId,sessionDetail,messages} = await req.json();
+export async function POST(req: NextRequest) {
+    const { sessionId, sessionDetail, messages } = await req.json();
 
-    try{
-        const UserInput ="AI Doctor Agent Info:"+JSON.stringify(sessionDetail)+ ", Conversation:" +JSON.stringify(messages);
+    if (!sessionId || !sessionDetail || !messages) {
+        return NextResponse.json(
+            { error: 'Missing required fields' },
+            { status: 400 }
+        );
+    }
+
+    try {
+        const UserInput = "AI Doctor Agent Info:" + JSON.stringify(sessionDetail) + ", Conversation:" + JSON.stringify(messages);
         const completion = await openai.chat.completions.create({
             model: 'google/gemini-2.5-flash-lite',
             messages: [
-            { role: 'system', content: REPORT_GEN_PROMPT },
-            { role: 'user', content: UserInput },
+                { role: 'system', content: REPORT_GEN_PROMPT },
+                { role: 'user', content: UserInput },
             ],
         });
      
-      const rawResp=completion.choices[0].message;
-      //@ts-ignore
-      const Resp=rawResp.content.trim().replace('```json','').replace('```','');
-      const JSONResp = JSON.parse(Resp);
+        const rawResp = completion.choices[0].message;
+        const content = rawResp.content;
+        
+        if (!content) {
+            throw new Error('No content in AI response');
+        }
 
-      //save to db
-    const result = await db.update(SessionChatTable).set({
-      report: JSONResp,
-      conversation: messages
-    }).where(eq(SessionChatTable.sessionId, sessionId));
+        const Resp = content.trim().replace('```json', '').replace('```', '');
+        const JSONResp = JSON.parse(Resp);
 
+        // Save to db
+        const result = await db.update(SessionChatTable).set({
+            report: JSONResp,
+            conversation: messages
+        }).where(eq(SessionChatTable.sessionId, sessionId));
 
-      return NextResponse.json(JSONResp)
+        return NextResponse.json(JSONResp);
 
-    }catch(e){
-        return NextResponse.json(e)
-
+    } catch (e) {
+        console.error('Error generating medical report:', e);
+        return NextResponse.json(
+            { error: 'Failed to generate medical report' },
+            { status: 500 }
+        );
     }
 }

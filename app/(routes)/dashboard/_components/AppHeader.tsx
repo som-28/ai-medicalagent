@@ -1,48 +1,40 @@
+'use client';
 import React from "react";
 import Image from "next/image";
-import { index } from "drizzle-orm/gel-core";
-import { h2 } from "motion/react-client";
 import { UserButton } from "@clerk/nextjs";
-
-
-const menuOptions = [
-  {
-    id: 1,
-    name: 'Home',
-    path: '/dashboard',
-  },
-  {
-    id: 2,
-    name: 'History',
-    path: '/dashboard/history',
-  },
-  {
-    id: 3,
-    name: 'Pricing',
-    path: '/pricing', // fixed typo here
-  },
-  {
-    id: 4,
-    name: 'Profile',
-    path: '/profile',
-  },
-];
-
-
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { IconHome, IconStethoscope } from "@tabler/icons-react";
 
 function AppHeader() {
+    const pathname = usePathname();
+
     return (
-
-        <div className="flex item-center justify-between p-4 shadow px-10 md:px-20 lg:px-40 " ><div className="flex items-center justify-between"><Image src={'/logomain.svg'} alt='logo' width={40} height={40} /><span className="font-bold p-2">EchoDocAI</span></div>
-            
-            <div className='hidden md:flex gap-12 items-center'>
-                {menuOptions.map((option,index)=>(
-                    <h2 className="hover:font-bold cursor-pointer transition-all">{option.name}</h2>
-                ))}
+        <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:px-20 xl:px-40">
+                <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+                    <div className="rounded-xl bg-primary p-2">
+                        <Image src={'/logomain.svg'} alt='logo' width={24} height={24} className="invert dark:invert-0" />
+                    </div>
+                    <span className="text-xl font-bold">EchoDocAI</span>
+                </Link>
+                
+                <div className='flex items-center gap-6'>
+                    <Link 
+                        href="/dashboard"
+                        className={`hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors md:flex ${
+                            pathname === '/dashboard' 
+                                ? 'bg-primary/10 text-primary' 
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                    >
+                        <IconHome size={18} />
+                        Dashboard
+                    </Link>
+                    <UserButton afterSignOutUrl="/" />
+                </div>
             </div>
-            <UserButton/>
-        </div>
-
+        </header>
     )
 }
 export default AppHeader;

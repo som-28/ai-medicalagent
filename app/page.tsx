@@ -1,123 +1,218 @@
 "use client";
 
-import { BentoGrid } from "@/components/ui/bento-grid";
 import { motion } from "motion/react";
-import { FeatureBentoGrid } from "./_components/FeatureBentoGrid";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import Link from "next/link"; // Changed from lucide-react to next/link
-import { useRouter } from "next/navigation"; // For redirect
+import Link from "next/link";
+import LoadingSpinner from "@/components/LoadingSpinner";
+import { IconBrain, IconMicrophone, IconFileAnalytics, IconShield, IconClock, IconUsers } from "@tabler/icons-react";
 
-export default function HeroSectionOne() {
+export default function LandingPage() {
+  const { isLoaded } = useUser();
+
+  if (!isLoaded) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <LoadingSpinner size="lg" text="Loading..." />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative my-10 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
       <Navbar />
-      <div className="absolute inset-y-0 left-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute top-0 h-40 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
-      </div>
-      <div className="absolute inset-y-0 right-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute h-40 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
-      </div>
-      <div className="absolute inset-x-0 bottom-0 h-px w-full bg-neutral-200/80 dark:bg-neutral-800/80">
-        <div className="absolute mx-auto h-px w-40 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-      </div>
+      
+      {/* Hero Section */}
+      <section className="relative px-4 py-20 md:py-32">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+              <IconBrain size={16} />
+              AI-Powered Healthcare
+            </div>
+            
+            <h1 className="mb-6 text-4xl font-bold leading-tight tracking-tight md:text-6xl lg:text-7xl">
+              Your Personal
+              <span className="bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent"> AI Medical </span>
+              Assistant
+            </h1>
+            
+            <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground md:text-xl">
+              Connect with AI specialist doctors through voice consultations. 
+              Get instant medical advice and automated health reports, available 24/7.
+            </p>
 
-      <div className="px-4 py-10 md:py-20">
-        <h1 className="relative z-10 mx-auto max-w-4xl text-center text-2xl font-bold text-slate-700 md:text-4xl lg:text-7xl dark:text-slate-300">
-          {"🧠 Elevate Healthcare Services Using AI Voice Agents"
-            .split(" ")
-            .map((word, index) => (
-              <motion.span
-                key={index}
-                initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
-                animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: index * 0.1,
-                  ease: "easeInOut",
-                }}
-                className="mr-2 inline-block"
-              >
-                {word}
-              </motion.span>
-            ))}
-        </h1>
+            <div className="flex w-full flex-col items-center justify-center gap-4 px-4 sm:flex-row">
+              <Link href="/dashboard" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full gap-2 sm:min-w-[200px]">
+                  <IconMicrophone size={20} />
+                  Start Consultation
+                </Button>
+              </Link>
+              <Link href="/dashboard" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="w-full sm:min-w-[200px]">
+                  View Specialists
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.8 }}
-          className="relative z-10 mx-auto max-w-xl py-4 text-center text-lg font-normal text-neutral-600 dark:text-neutral-400"
-        >
-          Use conversational AI to offer non-stop medical help — detect issues,
-          handle bookings, and support patients with natural, voice-based care
-        </motion.p>
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="mt-20 grid grid-cols-1 gap-6 sm:grid-cols-3"
+          >
+            <div className="rounded-2xl border bg-card p-6 text-center">
+              <div className="mb-2 text-3xl font-bold text-primary">10+</div>
+              <div className="text-sm text-muted-foreground">AI Specialists</div>
+            </div>
+            <div className="rounded-2xl border bg-card p-6 text-center">
+              <div className="mb-2 text-3xl font-bold text-primary">24/7</div>
+              <div className="text-sm text-muted-foreground">Availability</div>
+            </div>
+            <div className="rounded-2xl border bg-card p-6 text-center">
+              <div className="mb-2 text-3xl font-bold text-primary">Instant</div>
+              <div className="text-sm text-muted-foreground">Medical Reports</div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 1 }}
-          className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
-        >
-          <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Get Started
-          </button>
-        </motion.div>
+      {/* Features Section */}
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mb-12 text-center"
+          >
+            <h2 className="mb-4 text-3xl font-bold md:text-4xl">
+              Why Choose EchoDoc AI?
+            </h2>
+            <p className="text-lg text-muted-foreground">
+              Advanced AI technology meets healthcare expertise
+            </p>
+          </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 1.2 }}
-          className="relative z-10 mt-20 rounded-3xl border border-neutral-200 bg-neutral-100 p-4 shadow-md dark:border-neutral-800 dark:bg-neutral-900"
-        >
-          <div className="w-full overflow-hidden rounded-xl border border-gray-300 dark:border-gray-700">
-            <img
-              src="https://assets.aceternity.com/pro/aceternity-landing.webp"
-              alt="Landing page preview"
-              className="aspect-[16/9] h-auto w-full object-cover"
-              height={1000}
-              width={1000}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <FeatureCard
+              icon={<IconMicrophone size={24} />}
+              title="Voice Consultations"
+              description="Natural conversations with AI doctors through advanced voice technology"
+            />
+            <FeatureCard
+              icon={<IconFileAnalytics size={24} />}
+              title="Instant Reports"
+              description="Get detailed medical reports generated automatically after each consultation"
+            />
+            <FeatureCard
+              icon={<IconClock size={24} />}
+              title="24/7 Availability"
+              description="Access medical advice anytime, anywhere without waiting"
+            />
+            <FeatureCard
+              icon={<IconUsers size={24} />}
+              title="Multiple Specialists"
+              description="Choose from 10+ AI specialists covering various medical fields"
+            />
+            <FeatureCard
+              icon={<IconShield size={24} />}
+              title="Secure & Private"
+              description="Your health data is encrypted and protected at all times"
+            />
+            <FeatureCard
+              icon={<IconBrain size={24} />}
+              title="AI-Powered"
+              description="Powered by advanced AI models for accurate health insights"
             />
           </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="px-4 py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-4xl rounded-3xl border bg-gradient-to-br from-primary/10 to-blue-500/10 p-6 text-center sm:p-8 md:p-12"
+        >
+          <h2 className="mb-4 text-2xl font-bold sm:text-3xl md:text-4xl">
+            Ready to Get Started?
+          </h2>
+          <p className="mb-8 text-base text-muted-foreground sm:text-lg">
+            Join thousands using EchoDoc AI for their healthcare needs
+          </p>
+          <Link href="/dashboard" className="inline-block w-full sm:w-auto">
+            <Button size="lg" className="w-full sm:min-w-[200px]">
+              Start Your First Consultation
+            </Button>
+          </Link>
         </motion.div>
-      </div>
-      <FeatureBentoGrid />
+      </section>
     </div>
   );
 }
 
+const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="group rounded-2xl border bg-card p-6 transition-all hover:shadow-lg"
+    >
+      <div className="mb-4 inline-flex rounded-xl bg-primary/10 p-3 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+        {icon}
+      </div>
+      <h3 className="mb-2 text-xl font-semibold">{title}</h3>
+      <p className="text-muted-foreground">{description}</p>
+    </motion.div>
+  );
+};
+
 const Navbar = () => {
   const { user } = useUser();
-  const router = useRouter();
-
-  const handleDashboardRedirect = () => {
-    router.push("/dashboard");
-  };
 
   return (
-    <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
-      <div className="flex items-center gap-2">
-        <Image
-          src={"/logomain.svg"}
-          alt={"Description of the image"}
-          width={40}
-          height={30}
-        />
-        <h1 className="text-base font-bold md:text-xl">EchoDoc AI</h1>
-      </div>
-      {!user ? (
-        <Link href={"/sign-in"}>
-          <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Login
-          </button>
+    <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+        <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
+          <Image
+            src={"/logomain.svg"}
+            alt={"EchoDoc AI Logo"}
+            width={40}
+            height={40}
+          />
+          <h1 className="text-xl font-bold">EchoDoc AI</h1>
         </Link>
-      ) : (
-        <div className="flex gap-5 items-center">
-          <UserButton />
-          <Button onClick={handleDashboardRedirect}>Dashboard</Button>
-        </div>
-      )}
+        {!user ? (
+          <Link href={"/sign-in"}>
+            <Button>
+              Sign In
+            </Button>
+          </Link>
+        ) : (
+          <div className="flex items-center gap-3">
+            <Link href="/dashboard">
+              <Button variant="ghost">Dashboard</Button>
+            </Link>
+            <UserButton afterSignOutUrl="/" />
+          </div>
+        )}
+      </div>
     </nav>
   );
 };
