@@ -188,15 +188,14 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0.5">
         <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
           <Image
-            src={"/logomain.svg"}
+            src="/logonew.png"
             alt={"EchoDoc AI Logo"}
-            width={40}
-            height={40}
+            width={100}
+            height={26}
           />
-          <h1 className="text-xl font-bold">EchoDoc AI</h1>
         </Link>
         
         <div className="flex items-center gap-6">

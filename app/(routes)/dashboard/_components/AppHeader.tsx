@@ -18,12 +18,9 @@ function AppHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:px-20 xl:px-40">
+            <div className="flex items-center justify-between px-4 py-0.5 md:px-10 lg:px-20 xl:px-40">
                 <Link href="/dashboard" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-                    <div className="rounded-xl bg-primary p-2">
-                        <Image src={'/logomain.svg'} alt='logo' width={24} height={24} className="invert dark:invert-0" />
-                    </div>
-                    <span className="text-xl font-bold">EchoDocAI</span>
+                    <Image src={'/logonew.png'} alt='logo' width={100} height={26} />
                 </Link>
                 
                 <div className='flex items-center gap-2 md:gap-6'>
