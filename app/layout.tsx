@@ -20,6 +20,14 @@ export const metadata: Metadata = {
   title: "EchoDoc AI - AI Medical Voice Agent",
   description: "Connect with AI specialist doctors through voice consultations. Get instant medical advice and automated health reports.",
   keywords: ["AI medical assistant", "voice consultation", "telemedicine", "healthcare AI"],
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.png', sizes: '16x16', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
