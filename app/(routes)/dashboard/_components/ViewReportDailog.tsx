@@ -26,7 +26,7 @@ function ViewReportDailog({ record }: props) {
 
   // Build digest pages dynamically based on available sections
   const pages = useMemo(() => {
-    const arr: { key: string; title: string; content: JSX.Element }[] = [];
+    const arr: { key: string; title: string; content: React.ReactElement }[] = [];
     arr.push({
       key: 'doctor',
       title: 'Doctor Information',
