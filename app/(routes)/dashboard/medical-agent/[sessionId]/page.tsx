@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import SOSButton from '@/components/SOSButton';
 
 export type sessionDetail = {
   id: number;
@@ -242,6 +243,11 @@ function MedicalVoiceAgent() {
 
   return (
     <div className='overflow-hidden rounded-3xl border bg-gradient-to-b from-card to-muted/20'>
+      {/* SOS Button - Fixed Position */}
+      <div className='fixed bottom-6 right-6 z-40'>
+        <SOSButton sessionId={sessionId as string} />
+      </div>
+
       {/* Header */}
       <div className='border-b bg-card p-4 md:p-6'>
         <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
