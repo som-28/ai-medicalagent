@@ -191,7 +191,7 @@ const Navbar = () => {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-0.5">
         <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
           <Image
-            src="/logonew.png"
+            src="/logobg.png"
             alt={"EchoDoc AI Logo"}
             width={100}
             height={26}
