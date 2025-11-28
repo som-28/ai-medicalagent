@@ -3,6 +3,7 @@ import { db } from '@/config/db'
 import { EmergencyHistoryTable, SessionChatTable, EmergencyContactsTable, EmergencyProfileTable } from '@/config/schema'
 import { eq } from 'drizzle-orm'
 import { currentUser } from '@clerk/nextjs/server'
+import { sendEmergencyAlerts } from '@/lib/twilioClient'
 
 export async function POST(req: NextRequest) {
   try {
@@ -83,15 +84,40 @@ export async function POST(req: NextRequest) {
       notes: 'Emergency triggered by user',
     }).returning()
 
-    // TODO: Send notifications to emergency contacts
-    // This would integrate with your notification service (email/SMS)
-    await sendEmergencyNotifications(contacts, emergencyReport, userEmail)
+    // Send SMS alerts to emergency contacts
+    const notificationResults = await sendEmergencyAlerts(
+      contacts.map(c => ({
+        name: c.name,
+        phone: c.phoneNumber,
+        email: c.email || undefined,
+        relationship: c.relationship || 'Contact',
+        isPrimary: c.isPrimary === 1,
+      })),
+      {
+        userName: user.fullName || user.firstName || 'User',
+        userEmail,
+        timestamp: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+        location: location ? `${location.latitude}, ${location.longitude}` : undefined,
+        medicalInfo: profile[0] ? {
+          bloodType: profile[0].bloodType || undefined,
+          allergies: profile[0].allergies || undefined,
+          medications: profile[0].medications || undefined,
+          conditions: profile[0].medicalConditions || undefined,
+        } : undefined,
+        sessionId: sessionId || undefined,
+      }
+    )
+
+    console.log('SMS notification results:', notificationResults)
 
     return NextResponse.json({
       success: true,
       emergencyId: emergencyRecord[0].id,
-      contactsNotified: contacts.length,
-      message: 'Emergency services notified',
+      contactsNotified: notificationResults.successful,
+      totalContacts: notificationResults.total,
+      failed: notificationResults.failed,
+      message: `Emergency alert sent to ${notificationResults.successful} contact(s)`,
+      details: notificationResults.results,
     })
   } catch (error) {
     console.error('Emergency trigger error:', error)
@@ -102,43 +128,4 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function sendEmergencyNotifications(
-  contacts: any[],
-  report: any,
-  userEmail: string
-) {
-  // This is a placeholder for notification logic
-  // You would integrate with services like:
-  // - Twilio for SMS
-  // - SendGrid/Resend for Email
-  // - Push notifications
-  
-  console.log('Sending emergency notifications to:', contacts.length, 'contacts')
-  console.log('Emergency report:', report)
-  
-  // Example notification content:
-  const message = `
-    EMERGENCY ALERT
-    
-    ${userEmail} has triggered an emergency SOS.
-    
-    Time: ${report.timestamp}
-    
-    Medical Information:
-    ${report.medicalInfo ? `
-    - Blood Type: ${report.medicalInfo.bloodType || 'Not specified'}
-    - Allergies: ${report.medicalInfo.allergies || 'None listed'}
-    - Medications: ${report.medicalInfo.medications || 'None listed'}
-    ` : 'No medical information on file'}
-    
-    Please check on them immediately or call emergency services.
-  `
-  
-  // TODO: Implement actual notification sending
-  // for (const contact of contacts) {
-  //   await sendSMS(contact.phoneNumber, message)
-  //   if (contact.email) {
-  //     await sendEmail(contact.email, 'EMERGENCY ALERT', message)
-  //   }
-  // }
-}
+

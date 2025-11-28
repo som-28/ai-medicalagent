@@ -88,31 +88,33 @@ export default function SOSButton({ sessionId, className }: SOSButtonProps) {
 
   return (
     <>
-      {/* SOS Button */}
-      <Button
-        onClick={handleSOSClick}
-        className={`bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg ${
-          isEmergencyActive ? 'animate-pulse' : ''
-        } ${className}`}
-        size="lg"
-      >
-        <IconAlertTriangle className="mr-2" size={20} />
-        {isEmergencyActive ? `Emergency Active (${countdown}s)` : 'SOS'}
-      </Button>
+      {/* SOS Button (hidden while active to avoid duplicate indicators) */}
+      {!isEmergencyActive && (
+        <Button
+          onClick={handleSOSClick}
+          className={`bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg ${className}`}
+          size="lg"
+        >
+          <IconAlertTriangle className="mr-2" size={20} />
+          SOS
+        </Button>
+      )}
 
-      {/* Active Emergency Banner */}
+      {/* Active Emergency Indicator (moved to bottom-right to avoid header overlap) */}
       {isEmergencyActive && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 text-white px-4 py-2 text-center font-bold animate-pulse">
-          <div className="flex items-center justify-center gap-4">
-            <IconAlertTriangle size={24} />
-            <span>EMERGENCY MODE ACTIVE - {countdown}s to cancel</span>
+        <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 max-w-sm rounded-lg border border-red-200 dark:border-red-800 bg-red-600 text-white shadow-lg">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <IconAlertTriangle size={22} />
+            <div className="flex-1">
+              <p className="text-sm font-semibold leading-tight">Emergency mode active</p>
+              <p className="text-xs opacity-90">{countdown}s remaining to cancel</p>
+            </div>
             <Button
               onClick={handleCancelEmergency}
-              variant="outline"
               size="sm"
               className="bg-white text-red-600 hover:bg-gray-100"
             >
-              Cancel Emergency
+              Cancel
             </Button>
           </div>
         </div>
@@ -126,7 +128,9 @@ export default function SOSButton({ sessionId, className }: SOSButtonProps) {
               <IconAlertTriangle size={24} />
               Emergency SOS Activation
             </DialogTitle>
-            <DialogDescription className="space-y-4 pt-4">
+            {/* Use asChild so description does not render a <p> wrapper */}
+            <DialogDescription asChild>
+              <div className="space-y-4 pt-4">
               <p className="font-semibold">
                 Are you experiencing a medical emergency?
               </p>
@@ -162,6 +166,7 @@ export default function SOSButton({ sessionId, className }: SOSButtonProps) {
                 >
                   Cancel
                 </Button>
+              </div>
               </div>
             </DialogDescription>
           </DialogHeader>

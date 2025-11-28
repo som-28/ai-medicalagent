@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 const pricingPlans = [
   {
     name: 'Free',
-    price: '$0',
+    price: '₹0',
     period: 'forever',
     description: 'Perfect for trying out EchoDoc AI',
     features: [
@@ -30,7 +30,7 @@ const pricingPlans = [
   },
   {
     name: 'Premium',
-    price: '$29',
+    price: '₹299',
     period: 'per month',
     description: 'Best for regular health monitoring',
     features: [

@@ -210,7 +210,7 @@ export default function ProfilePage() {
                       <IconSparkles className="text-primary" size={24} />
                       <div>
                         <p className="font-semibold">Premium Plan</p>
-                        <p className="text-sm text-muted-foreground">$29/month • Renews monthly</p>
+                        <p className="text-sm text-muted-foreground">₹299/month • Renews monthly</p>
                       </div>
                     </div>
                     <Button variant="outline" className="w-full rounded-xl">
