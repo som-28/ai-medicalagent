@@ -5,11 +5,17 @@ import DoctorsAgentlist from './_components/DoctorsAgentlist';
 import AddNewSessionDialog from './_components/AddNewSessionDialog';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { IconSparkles, IconStethoscope } from '@tabler/icons-react';
+import SOSButton from '@/components/SOSButton';
 
 function Dashboard() {
     return (
         <ErrorBoundary>
             <div className='space-y-10'>
+                {/* SOS Button - Fixed Position */}
+                <div className='fixed bottom-6 right-6 z-40'>
+                    <SOSButton />
+                </div>
+
                 {/* Welcome Header */}
                 <div className='rounded-3xl border bg-gradient-to-br from-primary/5 via-primary/10 to-blue-500/5 p-8 md:p-10'>
                     <div className='flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between'>

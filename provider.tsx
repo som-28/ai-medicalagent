@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { UserDetailContext } from "./context/UserDetailcontext";
 import LoadingSpinner from "./components/LoadingSpinner";
+import { ThemeProvider } from "next-themes";
 
 export type UserDetail = {
     name: string;
@@ -76,9 +77,16 @@ function Provider({
     }
 
     return (
-        <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
-            {children}
-        </UserDetailContext.Provider>
+        <ThemeProvider 
+            attribute="class" 
+            defaultTheme="system" 
+            enableSystem
+            disableTransitionOnChange
+        >
+            <UserDetailContext.Provider value={{ userDetail, setUserDetail }}>
+                {children}
+            </UserDetailContext.Provider>
+        </ThemeProvider>
     )
 }
 

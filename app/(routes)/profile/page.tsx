@@ -19,6 +19,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import moment from 'moment';
+import EmergencyProfileManager from '@/components/EmergencyProfileManager';
+import EmergencyHistory from '@/components/EmergencyHistory';
 
 export default function ProfilePage() {
   const { user, isLoaded } = useUser();
@@ -234,6 +236,21 @@ export default function ProfilePage() {
                 )}
               </div>
             </div>
+
+            {/* Emergency Profile */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <div className="overflow-hidden rounded-3xl border bg-card p-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-2xl font-bold">Emergency Settings</h2>
+                  <EmergencyHistory />
+                </div>
+                <EmergencyProfileManager />
+              </div>
+            </motion.div>
 
             {/* Danger Zone */}
             <div className="overflow-hidden rounded-3xl border border-red-500/20 bg-card">

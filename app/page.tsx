@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { IconBrain, IconMicrophone, IconFileAnalytics, IconShield, IconClock, IconUsers } from "@tabler/icons-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function LandingPage() {
   const { isLoaded } = useUser();
@@ -205,6 +206,8 @@ const Navbar = () => {
           <Link href="/pricing" className="hidden text-sm font-medium text-muted-foreground transition-colors hover:text-foreground md:block">
             Pricing
           </Link>
+          
+          <ThemeToggle />
           
           {!user ? (
             <Link href={"/sign-in"}>

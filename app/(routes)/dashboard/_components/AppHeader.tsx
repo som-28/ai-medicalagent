@@ -5,6 +5,7 @@ import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconHome, IconHistory, IconUserCircle, IconCurrencyDollar } from "@tabler/icons-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 function AppHeader() {
     const pathname = usePathname();
@@ -42,6 +43,7 @@ function AppHeader() {
                             </Link>
                         );
                     })}
+                    <ThemeToggle />
                     <UserButton afterSignOutUrl="/" />
                 </div>
             </div>
