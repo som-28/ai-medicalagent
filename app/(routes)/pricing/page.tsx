@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
-import { IconCheck, IconX, IconSparkles, IconRocket } from '@tabler/icons-react';
+import { IconCheck, IconX, IconSparkles, IconRocket, IconCreditCard, IconLoader2 } from '@tabler/icons-react';
 import { toast } from 'sonner';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const pricingPlans = [
   {
@@ -12,6 +14,7 @@ const pricingPlans = [
     price: '$0',
     period: 'forever',
     description: 'Perfect for trying out EchoDoc AI',
+    priceId: null,
     features: [
       'Access to General Physician',
       '5 consultations per month',
@@ -33,6 +36,7 @@ const pricingPlans = [
     price: '$29',
     period: 'per month',
     description: 'Best for regular health monitoring',
+    priceId: 'price_premium_monthly',
     features: [
       'All 10+ AI specialists',
       'Unlimited consultations',
@@ -52,6 +56,7 @@ const pricingPlans = [
     price: 'Custom',
     period: 'contact us',
     description: 'For organizations and healthcare providers',
+    priceId: null,
     features: [
       'Everything in Premium',
       'Custom AI specialists',
@@ -70,14 +75,70 @@ const pricingPlans = [
 ];
 
 export default function PricingPage() {
-  const handleUpgrade = (planName: string) => {
+  const [loading, setLoading] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleUpgrade = async (planName: string, priceId: string | null) => {
     if (planName === 'Free') {
       toast.info('You are already on the Free plan');
-    } else if (planName === 'Premium') {
-      toast.success('Redirecting to checkout...');
-      // TODO: Implement Stripe checkout
-    } else {
+      return;
+    } 
+    
+    if (planName === 'Enterprise') {
       toast.info('Please contact sales@echodocai.com');
+      window.location.href = 'mailto:sales@echodocai.com?subject=Enterprise Plan Inquiry';
+      return;
+    }
+
+    if (planName === 'Premium' && priceId) {
+      try {
+        setLoading(planName);
+        toast.loading('Creating checkout session...', { id: 'checkout' });
+
+        const response = await axios.post('/api/create-checkout', {
+          priceId,
+          planName,
+        });
+
+        if (response.data.demo) {
+          toast.success('Demo Mode: Simulating successful payment!', { id: 'checkout' });
+          setTimeout(() => {
+            router.push(response.data.url);
+          }, 1500);
+        } else if (response.data.url) {
+          toast.success('Redirecting to checkout...', { id: 'checkout' });
+          window.location.href = response.data.url;
+        }
+      } catch (error) {
+        console.error('Error creating checkout session:', error);
+        toast.error('Failed to create checkout session. Please try again.', { id: 'checkout' });
+      } finally {
+        setLoading(null);
+      }
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    try {
+      setLoading('manage');
+      toast.loading('Opening billing portal...', { id: 'portal' });
+
+      const response = await axios.post('/api/create-portal');
+
+      if (response.data.demo) {
+        toast.info('Demo Mode: Billing portal would open here', { id: 'portal' });
+        setTimeout(() => {
+          router.push(response.data.url);
+        }, 1500);
+      } else if (response.data.url) {
+        toast.success('Redirecting to billing portal...', { id: 'portal' });
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.error('Error creating portal session:', error);
+      toast.error('Failed to open billing portal. Please try again.', { id: 'portal' });
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -140,14 +201,25 @@ export default function PricingPage() {
                 </div>
 
                 <Button
-                  onClick={() => handleUpgrade(plan.name)}
+                  onClick={() => handleUpgrade(plan.name, plan.priceId)}
                   className={`mb-6 w-full rounded-xl ${
                     plan.highlighted ? '' : 'variant-outline'
                   }`}
                   variant={plan.highlighted ? 'default' : 'outline'}
                   size="lg"
+                  disabled={loading === plan.name}
                 >
-                  {plan.buttonText}
+                  {loading === plan.name ? (
+                    <>
+                      <IconLoader2 size={18} className="mr-2 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      {plan.name === 'Premium' && <IconCreditCard size={18} className="mr-2" />}
+                      {plan.buttonText}
+                    </>
+                  )}
                 </Button>
 
                 <div className="space-y-4">
@@ -180,6 +252,42 @@ export default function PricingPage() {
           })}
         </div>
 
+        {/* Manage Subscription */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mt-12 text-center"
+        >
+          <div className="mx-auto max-w-2xl rounded-2xl border bg-gradient-to-br from-primary/5 to-primary/10 p-8">
+            <IconCreditCard size={40} className="mx-auto mb-4 text-primary" />
+            <h3 className="mb-2 text-xl font-bold">Already a subscriber?</h3>
+            <p className="mb-6 text-sm text-muted-foreground">
+              Manage your subscription, update payment methods, or view your billing history
+            </p>
+            <Button
+              onClick={handleManageSubscription}
+              variant="outline"
+              size="lg"
+              className="rounded-xl"
+              disabled={loading === 'manage'}
+            >
+              {loading === 'manage' ? (
+                <>
+                  <IconLoader2 size={18} className="mr-2 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <IconCreditCard size={18} className="mr-2" />
+                  Manage Subscription
+                </>
+              )}
+            </Button>
+          </div>
+        </motion.div>
+
         {/* FAQ Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -209,6 +317,12 @@ export default function PricingPage() {
               <h3 className="mb-2 font-semibold">What payment methods do you accept?</h3>
               <p className="text-sm text-muted-foreground">
                 We accept all major credit cards, debit cards, and digital payment methods through Stripe.
+              </p>
+            </div>
+            <div className="rounded-2xl border bg-card p-6">
+              <h3 className="mb-2 font-semibold">How does the demo mode work?</h3>
+              <p className="text-sm text-muted-foreground">
+                Currently in demo mode, payments are simulated. To enable real payments, add your Stripe API keys to the .env.local file.
               </p>
             </div>
           </div>

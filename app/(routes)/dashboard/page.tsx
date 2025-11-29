@@ -1,12 +1,35 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import HistoryList from './_components/HistoryList';
 import DoctorsAgentlist from './_components/DoctorsAgentlist';
 import AddNewSessionDialog from './_components/AddNewSessionDialog';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { IconSparkles, IconStethoscope } from '@tabler/icons-react';
+import { useSearchParams } from 'next/navigation';
+import { toast } from 'sonner';
 
 function Dashboard() {
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const payment = searchParams.get('payment');
+        const plan = searchParams.get('plan');
+
+        if (payment === 'success' && plan) {
+            toast.success(`Successfully upgraded to ${plan} plan! 🎉`, {
+                duration: 5000,
+                description: 'You now have access to all premium features.',
+            });
+            // Clean up URL
+            window.history.replaceState({}, '', '/dashboard');
+        } else if (payment === 'cancelled') {
+            toast.error('Payment was cancelled', {
+                description: 'You can try again anytime from the pricing page.',
+            });
+            window.history.replaceState({}, '', '/dashboard');
+        }
+    }, [searchParams]);
+
     return (
         <ErrorBoundary>
             <div className='space-y-10'>
