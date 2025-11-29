@@ -4,8 +4,9 @@ export const AIDoctorAgents = [
         specialist: "General Physician",
         description: "Helps with everyday health concerns and common symptoms.",
         image: "/doctor1.png",
-        agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they’re experiencing. Keep responses short and helpful.",
+        agentPrompt: "You are a friendly General Physician AI. Greet the user and quickly ask what symptoms they're experiencing. Keep responses short and helpful.",
         voiceId: "Will",
+        vapiAssistantId: "d0c38b6f-66df-4961-84a2-7a9a54bc7cae", // Your default assistant ID
         subscriptionRequired: false
     },
     {
@@ -15,6 +16,7 @@ export const AIDoctorAgents = [
         image: "/female-doc (1).jpg",
         agentPrompt: "You are a kind Pediatrician AI. Ask brief questions about the child's health and share quick, safe suggestions.",
         voiceId: "Charlie",
+        vapiAssistantId: "6e852ca3-038a-450c-b842-a43ee06277cc", // Lily assistant
         subscriptionRequired: true
     },
     {
@@ -24,6 +26,7 @@ export const AIDoctorAgents = [
         image: "/doctor3.png",
         agentPrompt: "You are a knowledgeable Dermatologist AI. Ask short questions about the skin issue and give simple, clear advice.",
         voiceId: "Mahmood",
+        vapiAssistantId: "b811acf9-8012-4250-a935-b745a0940012",
         subscriptionRequired: true
     },
     {
@@ -32,7 +35,8 @@ export const AIDoctorAgents = [
         description: "Supports mental health and emotional well-being.",
         image: "/female-doc (2).jpg",
         agentPrompt: "You are a caring Psychologist AI. Ask how the user is feeling emotionally and give short, supportive tips.",
-        voiceId: "Luisa",
+        voiceId: "129d7c7c-88fe-4bd2-9ee7-6d48d3a78e9a", // Psychologist voice ID
+        vapiAssistantId: "d0c38b6f-66df-4961-84a2-7a9a54bc7cae", // Default assistant (update when dedicated created)
         subscriptionRequired: true
     },
     {
@@ -41,7 +45,8 @@ export const AIDoctorAgents = [
         description: "Provides advice on healthy eating and weight management.",
         image: "/female-doc (3).jpg",
         agentPrompt: "You are a motivating Nutritionist AI. Ask about current diet or goals and suggest quick, healthy tips.",
-        voiceId: "Brittw",
+        voiceId: "9aef951c-8f54-411d-ad5f-261414ae6b6d", // Nutritionist voice ID
+        vapiAssistantId: "d0c38b6f-66df-4961-84a2-7a9a54bc7cae", // Default assistant (update when dedicated created)
         subscriptionRequired: true
     },
     {
@@ -51,6 +56,7 @@ export const AIDoctorAgents = [
         image: "/doctor6.png",
         agentPrompt: "You are a calm Cardiologist AI. Ask about heart symptoms and offer brief, helpful advice.",
         voiceId: "Emma",
+        vapiAssistantId: "889e2988-381d-4650-a5d4-bfd3f44d99b7", // Cardiologist assistant ID
         subscriptionRequired: true
     },
     {
@@ -60,6 +66,7 @@ export const AIDoctorAgents = [
         image: "/doctor2.png",
         agentPrompt: "You are a friendly ENT AI. Ask quickly about ENT symptoms and give simple, clear suggestions.",
         voiceId: "Jessica",
+        vapiAssistantId: "56f9224f-3a9c-4d32-b51b-7fa5fefb36bd", // ENT assistant ID
         subscriptionRequired: true
     },
     {
@@ -69,6 +76,7 @@ export const AIDoctorAgents = [
         image: "/doctor4.png",
         agentPrompt: "You are an understanding Orthopedic AI. Ask where the pain is and give short, supportive advice.",
         voiceId: "Olivia",
+        vapiAssistantId: "4c626008-392f-4be6-bd23-2f1b91824eff", // Orthopedic assistant ID
         subscriptionRequired: true
     },
     {
@@ -78,6 +86,7 @@ export const AIDoctorAgents = [
         image: "/female-doc (4).jpg",
         agentPrompt: "You are a respectful Gynecologist AI. Ask brief, gentle questions and keep answers short and reassuring.",
         voiceId: "Andrej",
+        vapiAssistantId: "fa7d08a2-1265-4110-8ee3-cbc3d2004bf0", // Gynecologist assistant ID
         subscriptionRequired: true
     },
     {
@@ -87,6 +96,7 @@ export const AIDoctorAgents = [
         image: "/doctor5.png",
         agentPrompt: "You are a cheerful Dentist AI. Ask about the dental issue and give quick, calming suggestions.",
         voiceId: "Ivan",
+        vapiAssistantId: "1615fa85-75f5-4346-a35f-5c1733c69438", // Dentist assistant ID
         subscriptionRequired: true
     }
 ];

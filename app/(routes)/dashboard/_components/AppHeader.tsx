@@ -1,14 +1,16 @@
 'use client';
 import React from "react";
 import Image from "next/image";
-import { UserButton } from "@clerk/nextjs";
+import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IconHome, IconHistory, IconUserCircle, IconCurrencyDollar } from "@tabler/icons-react";
+import { IconHome, IconHistory, IconUserCircle, IconCurrencyDollar, IconSparkles } from "@tabler/icons-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 function AppHeader() {
     const pathname = usePathname();
+    const { user } = useUser();
+    const isPremium = user?.publicMetadata?.isPremium === true;
 
     const navItems = [
         { href: '/dashboard', label: 'Home', icon: IconHome },
@@ -25,6 +27,12 @@ function AppHeader() {
                 </Link>
                 
                 <div className='flex items-center gap-2 md:gap-6'>
+                    {isPremium && (
+                        <div className="hidden items-center gap-1.5 rounded-full bg-gradient-to-r from-primary to-blue-600 px-3 py-1.5 text-xs font-semibold text-white md:flex">
+                            <IconSparkles size={14} />
+                            Premium
+                        </div>
+                    )}
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.href;

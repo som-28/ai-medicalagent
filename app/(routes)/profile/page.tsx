@@ -62,7 +62,7 @@ export default function ProfilePage() {
     );
   }
 
-  const isPremium = false; // TODO: Implement actual subscription check
+  const isPremium = user?.publicMetadata?.isPremium === true;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">

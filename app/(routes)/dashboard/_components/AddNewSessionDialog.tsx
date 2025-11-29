@@ -66,10 +66,28 @@ function AddNewSessionDialog() {
             } else {
                 throw new Error('Failed to create session');
             }
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error starting consultation:', err);
-            setError('Failed to start consultation. Please try again.');
-            toast.error('Failed to start consultation');
+            
+            // Handle limit reached error (403 status)
+            if (err.response?.status === 403 || err.response?.data?.limitReached) {
+                const errorData = err.response.data;
+                const errorMessage = errorData.error || 'Free plan limit reached';
+                setError(`${errorMessage} ${errorData.currentCount ? `(${errorData.currentCount}/${errorData.limit} used)` : ''}`);
+                toast.error(errorMessage, {
+                    duration: 6000,
+                    action: {
+                        label: 'Upgrade',
+                        onClick: () => {
+                            setOpen(false);
+                            router.push('/pricing');
+                        },
+                    },
+                });
+            } else {
+                setError('Failed to start consultation. Please try again.');
+                toast.error('Failed to start consultation');
+            }
         } finally {
             setLoading(false);
         }

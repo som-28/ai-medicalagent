@@ -1,7 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
 import { doctorAgent } from './DoctorAgentCard'
-import { IconLock, IconCheck } from '@tabler/icons-react'
+import { IconLock, IconCheck, IconSparkles } from '@tabler/icons-react'
+import { useUser } from '@clerk/nextjs'
 
 type props = {
     doctorAgent: doctorAgent;
@@ -10,8 +11,10 @@ type props = {
 }
 
 function SuggestedDoctorCard({ doctorAgent, setSelectedDoctor, selectedDoctor }: props) {
+  const { user } = useUser();
+  const isPremium = user?.publicMetadata?.isPremium === true;
   const isSelected = selectedDoctor?.id === doctorAgent?.id;
-  const isLocked = doctorAgent?.subscriptionRequired;
+  const isLocked = doctorAgent?.subscriptionRequired && !isPremium;
 
   return (
     <button 
@@ -33,10 +36,15 @@ function SuggestedDoctorCard({ doctorAgent, setSelectedDoctor, selectedDoctor }:
           <IconLock size={16} />
         </div>
       )}
+      {!isLocked && doctorAgent.subscriptionRequired && isPremium && (
+        <div className='absolute -right-2 -top-2 rounded-full bg-primary p-1.5 text-primary-foreground shadow-md'>
+          <IconSparkles size={16} />
+        </div>
+      )}
       <div className='relative'>
         <Image 
-          src={doctorAgent?.image}
-          alt={doctorAgent?.specialist}
+          src={doctorAgent?.image || '/placeholder-doctor.png'}
+          alt={doctorAgent?.specialist || 'Doctor'}
           width={70}
           height={70}
           className='h-[70px] w-[70px] rounded-2xl border-2 border-border object-cover transition-transform group-hover:scale-105'
@@ -46,11 +54,15 @@ function SuggestedDoctorCard({ doctorAgent, setSelectedDoctor, selectedDoctor }:
       <p className='mt-1 line-clamp-2 text-center text-xs text-muted-foreground'>
         {doctorAgent?.description}
       </p>
-      {isLocked && (
+      {isLocked ? (
         <span className='mt-2 text-center text-xs font-semibold text-muted-foreground'>
           Premium Only
         </span>
-      )}
+      ) : doctorAgent.subscriptionRequired && isPremium ? (
+        <span className='mt-2 text-center text-xs font-semibold text-primary'>
+          Premium Unlocked
+        </span>
+      ) : null}
     </button>
   )
 }

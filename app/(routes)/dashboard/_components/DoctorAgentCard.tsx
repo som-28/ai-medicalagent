@@ -7,6 +7,7 @@ import { toast } from 'sonner'
 import { motion } from 'motion/react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import { useUser } from '@clerk/nextjs'
 
 export type doctorAgent = {
     id: number;
@@ -15,6 +16,7 @@ export type doctorAgent = {
     image: string;
     agentPrompt: string;
     voiceId?: string;
+    vapiAssistantId?: string;
     subscriptionRequired?: boolean;
 }
 
@@ -24,11 +26,15 @@ type props = {
 
 function DoctorAgentCard({ doctorAgent }: props) {
   const router = useRouter();
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
+  
+  const isPremium = user?.publicMetadata?.isPremium === true;
 
   const handleClick = async () => {
-    if (doctorAgent.subscriptionRequired) {
+    if (doctorAgent.subscriptionRequired && !isPremium) {
       toast.info('This specialist requires a premium subscription');
+      router.push('/pricing');
       return;
     }
 
@@ -70,8 +76,8 @@ function DoctorAgentCard({ doctorAgent }: props) {
           className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-110'
         />
         
-        {/* Premium Badge */}
-        {doctorAgent.subscriptionRequired && (
+        {/* Premium Badge - Only show if not premium user */}
+        {doctorAgent.subscriptionRequired && !isPremium && (
           <div className='absolute right-3 top-3 flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-lg'>
             <IconLock size={12} />
             Premium
@@ -97,12 +103,12 @@ function DoctorAgentCard({ doctorAgent }: props) {
 
         <Button 
           className='w-full' 
-          variant={doctorAgent.subscriptionRequired ? 'outline' : 'default'}
+          variant={(doctorAgent.subscriptionRequired && !isPremium) ? 'outline' : 'default'}
           onClick={handleClick}
-          disabled={doctorAgent.subscriptionRequired || loading}
+          disabled={loading}
           size="sm"
         >
-          {doctorAgent.subscriptionRequired ? (
+          {(doctorAgent.subscriptionRequired && !isPremium) ? (
             <>
               <IconLock className='mr-2' size={16} />
               Upgrade to Access

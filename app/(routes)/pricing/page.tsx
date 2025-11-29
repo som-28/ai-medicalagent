@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { IconCheck, IconX, IconSparkles, IconRocket } from '@tabler/icons-react';
 import { toast } from 'sonner';
+import { useUser } from '@clerk/nextjs';
 
 const pricingPlans = [
   {
@@ -70,20 +71,37 @@ const pricingPlans = [
 ];
 
 export default function PricingPage() {
-  const handleUpgrade = (planName: string) => {
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+  
+  const isPremium = user?.publicMetadata?.isPremium === true;
+
+  const handleUpgrade = async (planName: string) => {
     if (planName === 'Free') {
       toast.info('You are already on the Free plan');
-    } else if (planName === 'Premium') {
-      toast.success('Redirecting to checkout...');
-      // TODO: Implement Stripe checkout
-    } else {
+      return;
+    }
+    
+    if (planName === 'Enterprise') {
       toast.info('Please contact sales@echodocai.com');
+      return;
+    }
+
+    if (planName === 'Premium') {
+      if (!user) {
+        toast.error('Please sign in to upgrade');
+        return;
+      }
+
+      // Redirect to UPI payment page
+      window.location.href = '/payment/upi';
+      return;
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/20">
-      <div className="mx-auto max-w-7xl px-4 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-20">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -146,8 +164,13 @@ export default function PricingPage() {
                   }`}
                   variant={plan.highlighted ? 'default' : 'outline'}
                   size="lg"
+                  disabled={loading || (plan.name === 'Premium' && isPremium)}
                 >
-                  {plan.buttonText}
+                  {plan.name === 'Premium' && isPremium 
+                    ? 'Current Plan' 
+                    : loading && plan.name === 'Premium' 
+                    ? 'Processing...' 
+                    : plan.buttonText}
                 </Button>
 
                 <div className="space-y-4">
@@ -208,12 +231,12 @@ export default function PricingPage() {
             <div className="rounded-2xl border bg-card p-6">
               <h3 className="mb-2 font-semibold">What payment methods do you accept?</h3>
               <p className="text-sm text-muted-foreground">
-                We accept all major credit cards, debit cards, and digital payment methods through Stripe.
+                We accept UPI payments. Simply scan the QR code and complete your payment.
               </p>
             </div>
           </div>
         </motion.div>
+        </div>
       </div>
-    </div>
   );
 }

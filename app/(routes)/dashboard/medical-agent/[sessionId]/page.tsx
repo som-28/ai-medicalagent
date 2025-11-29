@@ -113,10 +113,25 @@ function MedicalVoiceAgent() {
         return;
       }
 
+      if (!sessionDetail?.selectedDoctor) {
+        toast.error('Session details not loaded');
+        return;
+      }
+
       const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_API_KEY);
       setVapiInstance(vapi);
 
-      vapi.start(process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID);
+      // Use doctor-specific assistant ID or fallback to default
+      const assistantId = sessionDetail.selectedDoctor.vapiAssistantId || process.env.NEXT_PUBLIC_VAPI_VOICE_ASSISTANT_ID;
+      
+      if (!assistantId) {
+        toast.error('Voice assistant not configured');
+        console.error('No assistant ID available');
+        return;
+      }
+
+      console.log('Starting call with assistant ID:', assistantId);
+      vapi.start(assistantId);
 
       vapi.on('call-start', () => {
         setCallStarted(true);

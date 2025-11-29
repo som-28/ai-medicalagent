@@ -55,3 +55,19 @@ export const EmergencyHistoryTable = pgTable('emergencyHistory', {
   resolvedAt: varchar(),
   notes: text(),
 })
+
+export const PaymentTransactionsTable = pgTable('paymentTransactions', {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  userId: varchar().notNull().references(() => usersTable.email),
+  clerkUserId: varchar().notNull(),
+  upiTransactionId: varchar({ length: 255 }).notNull(),
+  amount: integer().notNull(), // Amount in paise
+  status: varchar({ length: 50 }).default('pending'), // 'pending', 'verified', 'rejected'
+  planType: varchar({ length: 50 }).notNull(), // 'premium'
+  paymentMethod: varchar({ length: 50 }).default('upi'),
+  screenshot: text(), // Optional: base64 or URL of payment screenshot
+  verifiedBy: varchar({ length: 255 }), // Admin email who verified
+  verifiedAt: varchar(),
+  createdAt: varchar().notNull(),
+  notes: text(),
+})

@@ -1,28 +1,42 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
-/node_modules
+# Dependencies
+node_modules/
 /.pnp
 .pnp.*
+# Yarn (kept for compatibility if ever used)
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
+pnpm-lock.yaml
 
-# testing
-/coverage
+# Package manager caches
+npm-cache/
+yarn-cache/
+pnpm-store/
 
-# next.js
-/.next/
-/out/
+# Testing / Coverage
+coverage/
+playwright-report/
+test-results/
+.nyc_output/
+.eslintcache
 
-# production
-/build
+# Next.js build output
+.next/
+out/
 
-# misc
-.DS_Store
+# Production build (if manually created)
+build/
+dist/
+
+# Misc certs / keys
 *.pem
+*.key
+*.crt
+*.cert
 
 # debug
 npm-debug.log*
@@ -30,7 +44,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# Environment files (keep example only)
 .env*
 !.env.example
 
@@ -41,23 +55,26 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# clerk configuration (can include secrets)
-/.clerk/
+# Clerk (avoid committing secret configuration caches)
+.clerk/
 
-# Database
+# Local database artifacts
 *.db
 *.sqlite
 *.sqlite3
+*.dump
+*.sql
 
-# Database migration scripts (temporary)
+# Temporary migration helpers (keep the actual migration SQL files committed)
 migrate.ts
 migrate-emergency.ts
 
 # Logs
 logs/
 *.log
+*.log.*
 
-# IDE
+# IDE / Editor
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -68,10 +85,19 @@ logs/
 *.swo
 *~
 
-# OS
+# OS generated files
 Thumbs.db
 .DS_Store
 
-# Backup files
+# Backup / temp files
 *.bak
 *.backup
+*.orig
+*.tmp
+
+# Generated type metadata
+*.tsbuildinfo
+next-env.d.ts
+
+# Drizzle cache (keep migrations folder if present)
+drizzle/meta/*

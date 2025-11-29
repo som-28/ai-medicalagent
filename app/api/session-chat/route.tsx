@@ -9,12 +9,45 @@ export async function POST(req: NextRequest) {
   const { notes, selectedDoctor } = await req.json();
   const user = await currentUser();
 
+  if (!user?.primaryEmailAddress?.emailAddress) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
+    const userEmail = user.primaryEmailAddress.emailAddress;
+
+    // Check if user is premium (you'll need to implement this check based on your subscription logic)
+    const isPremium = user.publicMetadata?.isPremium === true;
+
+    if (!isPremium) {
+      // Count consultations this month for free users
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      const consultationsThisMonth = await db.select().from(SessionChatTable)
+        .where(eq(SessionChatTable.createdBy, userEmail));
+
+      // Filter by month (since createdOn is varchar, we need to parse)
+      const monthlyCount = consultationsThisMonth.filter(session => {
+        const sessionDate = new Date(session.createdOn || '');
+        return sessionDate >= startOfMonth;
+      }).length;
+
+      if (monthlyCount >= 5) {
+        return NextResponse.json({ 
+          error: 'Free plan limit reached. You have used all 5 consultations this month. Upgrade to Premium for unlimited consultations.',
+          limitReached: true,
+          currentCount: monthlyCount,
+          limit: 5
+        }, { status: 403 });
+      }
+    }
+
     const sessionId = uuidv4();
 
     const result = await db.insert(SessionChatTable).values({
       sessionId,
-      createdBy: user?.primaryEmailAddress?.emailAddress,
+      createdBy: userEmail,
       notes,
       selectedDoctor,
       createdOn: new Date().toString()
