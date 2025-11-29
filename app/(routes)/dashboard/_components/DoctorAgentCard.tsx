@@ -16,6 +16,7 @@ export type doctorAgent = {
     image: string;
     agentPrompt: string;
     voiceId?: string;
+    assistantId?: string;
     subscriptionRequired?: boolean;
 }
 
